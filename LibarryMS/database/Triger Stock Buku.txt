@@ -1,0 +1,16 @@
+alter trigger trgupdstok
+on temp_trans
+for insert
+as
+begin
+	declare @kodebuku varchar(50)
+	set @kodebuku = (select kode_buku from inserted)
+	declare @stoklama varchar(5)
+	set @stoklama = (select stock from buku where kode = @kodebuku)
+	declare @jbd varchar(5)
+	set @jbd = (select stock from inserted)
+	declare @stokbaru int
+	set @stokbaru = cast(@stoklama as int) - cast(@jbd as int)
+	update buku set stock = cast(@stokbaru as varchar)
+	where kode = @kodebuku
+end
